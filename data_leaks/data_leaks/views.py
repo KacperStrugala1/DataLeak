@@ -1,5 +1,4 @@
-from django.http import HttpResponse, request
+from django.http import HttpResponse
 
-
-def homeview():
-    return HttpResponse(request, "Hello world")
+def index(request):
+    return HttpResponse("Hllo")

@@ -98,17 +98,3 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
-from loguru import logger
-import os
-
-# Definiujemy ścieżkę do pliku w głównym folderze projektu
-LOG_FILE_PATH = os.path.join(BASE_DIR, 'debug.log')
-
-# To jest kluczowy moment - dodajemy "sink" (odpływ), czyli plik
-# Robimy to RAZ. Od teraz logger wie, gdzie pisać.
-logger.add(
-    LOG_FILE_PATH,
-    rotation="5 MB",  # Jak plik urośnie do 5MB, zrób nowy
-    level="DEBUG",    # Zapisuj wszystko od DEBUG w górę
-    format="{time} {level} {message}"
-)

@@ -1,5 +1,5 @@
 from pypdf import PdfReader
-from loguru import logger
+import logging
 
 def get_metadata(file):
     try:
@@ -17,5 +17,5 @@ def get_metadata(file):
                 "Title": getattr(meta, 'title', None)
             }
     except Exception as exc:
-        logger.info(f"Error occured: {exc}")
+        logging.info(f"Error occured: {exc}")
         return f"Error occured: {exc}"

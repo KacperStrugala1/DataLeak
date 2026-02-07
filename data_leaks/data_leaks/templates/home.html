@@ -14,9 +14,9 @@
                     <h2 class="subtitle">Find out what metadata you are using</h2><br>
                 </div>
                 <div class="mt-5 has-text-centered">
-                    <form method="post" action="">
+                    <form method="post" action="" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <input type="file" label="file" name="FILE" style="width: auto;"> <br><br>
+                        {{ form.file }} <br> <br>
                         <button class="button is-link is-vcentered"  id="custom-file-input" type="submit">Check file</button>
                     </form>
                 </div>

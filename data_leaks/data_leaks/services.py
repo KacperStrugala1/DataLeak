@@ -5,12 +5,9 @@ import logging
 
 
 class PdfFile:
-    def __init__(self, pdf_file):
-        self.pdf_file = pdf_file
-
-    def get_metadata(self):
+    def get_metadata(self, file):
         try:
-            reader = PdfReader(f"{self.pdf_file}")
+            reader = PdfReader(file)
             meta = reader.metadata
             
             if not meta:
@@ -29,16 +26,22 @@ class PdfFile:
             return f"Error occured: {exc}"
 
 class PhotoFile:
-    def __init__(self, photo_file):
-        self.photo_file = photo_file
 
-    def get_metadata(self):
-        image = Image(f"{self.photo_file}")
+    def get_metadata(self, file):
+        image = Image.open(file)
         exif_data = image.getexif()
+        meta_data = {}
 
-        for tag_id in exif_data:
-            meta_data = {}
+        for tag_id, value in exif_data.items():
             tagname = TAGS.get(tag_id, tag_id)
-            value = exif_data.get(tag_id)
+
+            if isinstance(value, bytes):
+                max_len = 50
+                if len(value) > max_len:
+                    value = value[:max_len].hex() + "..."
+                else:
+                    value = value.hex()
+
             meta_data[f"{tagname:25}"] = value
-            return meta_data
+
+        return meta_data

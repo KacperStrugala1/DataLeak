@@ -45,3 +45,7 @@ class PhotoFile:
             meta_data[f"{tagname:25}"] = value
 
         return meta_data
+    
+# class JsonConverter:
+
+#     def get_response(self, meta_data)

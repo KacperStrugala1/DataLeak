@@ -7,7 +7,7 @@ class FileType:
     def __init__(self):
         self.pdf_file = PdfFile()
         self.image_file = PhotoFile()
-        #image_extensions = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".ico"}  
+        #image_extensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".ico"]  
         #pdf_extension = ".pdf"
 
     def check_file_format(self, file):

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+    <title>MetaInfo</title>
+    <style>
+        .container has-text-centered{
+            background-color: gray;
+        }
+        a { color: inherit; } 
+    </style>
+</head>
+<body>
+    <section class="her is-fullheight is-light">
+            <div class="hero-body">
+                <div class="container has-text-centered">
+                    <br><h1 class="title">Your metadata in file</h1>
+                    {%if meta_data%}
+                        <div class="container has-text-centered column is-three-fifths is-offset-one-fift box has-background-light">
+                            {% for key, value in meta_data.items %}
+                                <strong> {{ key }}:<strong> {{ value|default:"None" }} <br>
+                            {% endfor %}
+                        </div>
+                        <div class="mt-5 has-text-centered">
+                            <button class="button is-link is-vcentered"  id="custom-file-input" type="submit">Download JSON metadata</button>
+                        </div>
+                    {% else %}
+                        <strong>No metadata<strong>
+                    {% endif %}
+                    <div class="mt-5 has-text-centered">
+                        <button class="button is-link is-vcentered has-text-white"><a href="">Back to Main Menu<a></button>
+                    </div>
+                </div>
+                
+            </div>
+        </section>
+    
+</body>
+</html>

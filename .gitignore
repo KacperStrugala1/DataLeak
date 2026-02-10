@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 *pyc
+tempCodeRunnerFile*
 
 # Django
 *.log
@@ -10,6 +11,7 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 media/
+main.py
 
 # Environment variables
 .env

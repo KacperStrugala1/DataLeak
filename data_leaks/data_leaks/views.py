@@ -1,11 +1,10 @@
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import render, redirect
-from django.views.generic import ListView
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render
+
 from . import forms
-from .services import PdfFile, PhotoFile#, JsonConverter
-import logging
 from .file_type import FileType
 
+import logging
 
 def index(request):
     try:
@@ -18,6 +17,8 @@ def index(request):
                 file = form.cleaned_data['file']
                 file_type = FileType()
                 meta_data = file_type.check_file_format(file)
+                #sending meta_data in session
+                request.session['meta_data'] = meta_data
 
                 return render(request, "meta_view.html", {"meta_data":meta_data})
         else:
@@ -30,9 +31,26 @@ def index(request):
         return HttpResponse(f"Internal error: {exc}", status=500)
 
 def meta_view(request):
-    # if request.method == "POST":
-        # json_response = JsonResponse()
-        # json_result = json_response.get_response()
-        # return JsonResponse(json_result)
+    try:
+        if request.method == "POST":
+            #JSON view for metadata
+            meta_data = request.session.get("meta_data")
+            if not meta_data:
+                return HttpResponse("Invalid or no metadata")
+            return JsonResponse(meta_data)
+    except Exception as exc:
+        return HttpResponse(f"Error: {exc}")
+    
+    del request.session["meta_data"]
         
     return render(request, "meta_view.html")
+
+def delete_meta_data(request):
+    try:
+        if request.method == "POST":
+            pass
+    except Exception as exc:
+        return HttpResponse(f"Error: {exc}")
+    
+def valentine(request):
+    return render(request, "valentine.html")

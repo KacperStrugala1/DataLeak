@@ -1,5 +1,5 @@
 
-1. Listing metadata in meta.html view
+
 2. Showin metadata in JSON
 3. Downloading new file without metas
 4. README on website

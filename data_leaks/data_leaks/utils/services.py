@@ -1,5 +1,6 @@
 from pypdf import PdfReader
 from PIL import Image
+from PIL.TiffImagePlugin import IFDRational
 from PIL.ExifTags import TAGS
 import logging
 
@@ -32,7 +33,8 @@ class PhotoFile:
         exif_data = image.getexif()
         meta_data = {}
 
-        for tag_id, value in exif_data.items():
+        for tag_id, value in exif_data.items() not in [bytes, IFDRational]:
+            logging.info(f"{tag_id}: {value}")
             tagname = TAGS.get(tag_id, tag_id)
 
             if isinstance(value, bytes):

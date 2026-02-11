@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
     <title>MetaInfo</title>
+    <style>
+        .container has-text-centered{
+            background-color: gray;
+        }
+        a { 
+            color: inherit; 
+        } 
+    </style>
 </head>
 <body>
     <section class="her is-fullheight is-light">
@@ -20,7 +28,7 @@
                         <div class="mt-5 has-text-centered">
                             <form method="post" action="{% url 'meta_view' %}">
                                 {%csrf_token%}
-                                <button class="button is-link is-vcentered"  name="json_metadata" id="custom-file-input" type="submit">Download JSON metadata</button>
+                                <button class="button is-link is-vcentered"  name="json_metadata" id="custom-file-input" type="submit">Show JSON metadata</button>
                             </form>
                         </div>
                     {% else %}

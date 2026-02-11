@@ -1,7 +1,4 @@
-from .services import PdfFile, PhotoFile
-from PIL import Image
-from django.http import HttpResponse
-import logging
+from .utils.services import PdfFile, PhotoFile
 
 class FileType:
     def __init__(self):

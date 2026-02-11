@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+<title>Valentine 💘</title>
+
+<style>
+body {
+    background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+    height: 100vh;
+    overflow: hidden;
+}
+
+h1 {
+    color: #c9184a;
+}
+
+.buttons-wrapper {
+    position: relative;
+    width: 600px;
+    height: 350px;
+    margin: 50px auto;
+}
+
+/* YES */
+#yesBtn {
+    position: absolute;
+    left: 35%;
+    top: 45%;
+    transition: transform 0.3s ease;
+}
+
+/* NO */
+#noBtn {
+    position: absolute;
+    left: 55%;
+    top: 45%;
+    transition: all 0.2s ease;
+}
+</style>
+</head>
+
+<body>
+
+<section class="hero is-fullheight">
+<div class="hero-body">
+<div class="container has-text-centered">
+
+<h1 class="title">💖 Will you be my Valentine? 💖</h1>
+
+<div class="buttons-wrapper" id="area">
+
+    <form method="post" action="{% url 'home_view' %}">
+        {% csrf_token %}
+        <button class="button is-danger is-medium" id="yesBtn" type="submit">
+            Yes 💕
+        </button>
+    </form>
+
+    <button class="button is-dark is-medium" id="noBtn">
+        No 😢
+    </button>
+
+</div>
+
+</div>
+</div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const area = document.getElementById("area");
+
+    let scale = 1;
+
+    noBtn.addEventListener("mouseenter", function () {
+
+        // YES rośnie
+        scale += 0.15;
+        yesBtn.style.transform = `scale(${scale})`;
+
+        // NO ucieka po całym obszarze
+        const maxX = area.offsetWidth - noBtn.offsetWidth;
+        const maxY = area.offsetHeight - noBtn.offsetHeight;
+
+        const randomX = Math.floor(Math.random() * maxX);
+        const randomY = Math.floor(Math.random() * maxY);
+
+        noBtn.style.left = randomX + "px";
+        noBtn.style.top = randomY + "px";
+    });
+
+});
+</script>
+
+</body>
+</html>

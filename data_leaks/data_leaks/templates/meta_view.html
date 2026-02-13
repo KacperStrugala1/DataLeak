@@ -28,14 +28,19 @@
                         <div class="mt-5 has-text-centered">
                             <form method="post" action="{% url 'meta_view' %}">
                                 {%csrf_token%}
-                                <button class="button is-link is-vcentered"  name="json_metadata" id="custom-file-input" type="submit">Show JSON metadata</button>
+                                <button class="button is-link "  name="action" value="download_json" id="custom-file-input" type="submit">Download JSON metadata</button>
                             </form>
                         </div>
-                    
+                        <div class="mt-5 has-text-centered">
+                            <form method="post" action="{% url 'meta_view' %}">
+                                {%csrf_token%}
+                                <button class="button is-link "  name="action" value="show_json" id="custom-file-input" type="submit">Show JSON metadata</button>
+                            </form>
+                        </div>
                       
                     
                     <div class="mt-5 has-text-centered">
-                        <button class="button is-link is-vcentered has-text-white">
+                        <button class="button is-link has-text-white">
                             <a href="{% url 'home_view' %}">Back to Main Menu<a>
                         </button>
                     </div>

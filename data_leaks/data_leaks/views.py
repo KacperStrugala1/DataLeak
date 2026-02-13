@@ -6,6 +6,9 @@ from . import forms
 from .file_type import FileType
 
 import logging
+import json
+import simplejson
+
 
 class HomeView(View):
     form_class = forms.UploadFileForm
@@ -35,6 +38,7 @@ class HomeView(View):
                 logging.error(f"Error {exc}")
                 return HttpResponse(f"Internal error: {exc}", status=500)
         
+
 class MetaView(View):
     template_name = "meta_view.html"
 
@@ -47,20 +51,24 @@ class MetaView(View):
 
     def post(self, request):
         try:
-            #JSON view for metadata
+            action = request.POST.get("action")
             meta_data = request.session.get("meta_data")
-            
-            if not meta_data:
-                return HttpResponse("Invalid session get or no metadata")
-            
-            del request.session["meta_data"]
-            return JsonResponse(meta_data)
-            
+
+            if action == "show_json":
+                return JsonResponse(meta_data)
+            elif action == "download_json":
+                return HttpResponse(
+                simplejson.dumps(meta_data), 
+                content_type='application/force-download'
+                )
+            else:
+                if not meta_data:
+                    return HttpResponse("Invalid session get or no metadata")
+        
         except Exception as exc:
             return HttpResponse(f"Error: {exc}")
     
     
-
 def delete_meta_data(request):
     try:
         if request.method == "POST":

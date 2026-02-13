@@ -14,7 +14,7 @@ class PdfFile:
             if not meta:
                 return "Cannot fetch metadata or blank file"
             else:
-                return {
+                meta_data = {
                     #gettatr get attribute 'author' form instance meta if not avail return None
                     "Author": getattr(meta, 'author', None),
                     "Creator": getattr(meta, 'creator', None),
@@ -22,6 +22,9 @@ class PdfFile:
                     "Subject": getattr(meta, 'subject', None),
                     "Title": getattr(meta, 'title', None)
                 }
+                logging.info(meta_data)
+                return meta_data
+            
         except Exception as exc:
             logging.info(f"Error occured: {exc}")
             return f"Error occured: {exc}"
@@ -33,19 +36,16 @@ class PhotoFile:
         exif_data = image.getexif()
         meta_data = {}
 
-        for tag_id, value in exif_data.items() not in [bytes, IFDRational]:
-            logging.info(f"{tag_id}: {value}")
-            tagname = TAGS.get(tag_id, tag_id)
+        for tag_id in exif_data:
+            
+            tag = TAGS.get(tag_id, tag_id)
+            data = exif_data.get(tag_id)
 
-            if isinstance(value, bytes):
-                max_len = 50
-                if len(value) > max_len:
-                    value = value[:max_len].hex() + "..."
-                else:
-                    value = value.hex()
+            if isinstance(data, bytes):
+                data = data.decode()
 
-            meta_data[f"{tagname:25}"] = value
-
+        meta_data[f"{tag}"] = data
+        logging.info(meta_data)
         return meta_data
     
 # class JsonConverter:

@@ -16,7 +16,7 @@
                 <div class="mt-5 has-text-centered">
                     <form method="post" action="{% url 'home_view' %}" enctype="multipart/form-data">
                         {% csrf_token %}
-                        {{ form.file }} <br> <br>
+                        {{ form.file }} <br><br>
                         <button class="button is-link is-vcentered"  id="custom-file-input" type="submit">Check metadata</button>
                         <button class="button is-link is-vcentered"  id="custom-file-input" type="submit">Download secured version</button>
                     </form>

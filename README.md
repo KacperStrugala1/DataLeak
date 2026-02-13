@@ -37,3 +37,20 @@ The project is designed for **educational and security testing purposes**.
 1. Clone the repository:
 ```bash
 git clone https://github.com/KacperStrugala1/DataLeak.git
+```
+2. Make virtual env
+```bash
+python -m venv venv 
+```
+3. Install uv 
+```bash
+ pip install uv
+ ```
+4. Sync uv to download all required libraries
+```bash
+ uv sync
+ ```
+5. Run server locally
+```bash
+python programit/manage.py runserver
+```

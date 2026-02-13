@@ -19,7 +19,7 @@
             <div class="hero-body">
                 <div class="container has-text-centered">
                     <br><h1 class="title">Your metadata in file</h1>
-                    {%if meta_data%}
+                   
                         <div class="container has-text-centered column is-three-fifths is-offset-one-fift box has-background-light">
                             {% for key, value in meta_data.items %}
                                 <strong> {{ key }}:</strong> {{ value|default:"None" }} <br>
@@ -31,9 +31,9 @@
                                 <button class="button is-link is-vcentered"  name="json_metadata" id="custom-file-input" type="submit">Show JSON metadata</button>
                             </form>
                         </div>
-                    {% else %}
-                        <strong>No metadata</strong>
-                    {% endif %}
+                    
+                      
+                    
                     <div class="mt-5 has-text-centered">
                         <button class="button is-link is-vcentered has-text-white">
                             <a href="{% url 'home_view' %}">Back to Main Menu<a>

@@ -3,6 +3,7 @@ from PIL import Image
 from PIL.TiffImagePlugin import IFDRational
 from PIL.ExifTags import TAGS
 import logging
+import datetime
 
 
 class PdfFile:
@@ -15,12 +16,14 @@ class PdfFile:
                 return "Cannot fetch metadata or blank file"
             else:
                 meta_data = {
-                    #gettatr get attribute 'author' form instance meta if not avail return None
+                    "Title": getattr(meta, 'title', None),
                     "Author": getattr(meta, 'author', None),
                     "Creator": getattr(meta, 'creator', None),
                     "Producer": getattr(meta, 'producer', None),
                     "Subject": getattr(meta, 'subject', None),
-                    "Title": getattr(meta, 'title', None)
+                    #added time serialization to get pass to json
+                    "Created": getattr(meta, 'creation_date', None).strftime("%Y-%m-%d %H:%M:%S"),
+                    "Keywords": getattr(meta, 'keywords', None)
                 }
                 logging.info(meta_data)
                 return meta_data
@@ -44,10 +47,6 @@ class PhotoFile:
             if isinstance(data, bytes):
                 data = data.decode()
 
-        meta_data[f"{tag}"] = data
-        logging.info(meta_data)
+            meta_data[f"{tag}"] = data
         return meta_data
     
-# class JsonConverter:
-
-#     def get_response(self, meta_data)

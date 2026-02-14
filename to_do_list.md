@@ -1,3 +1,6 @@
+To repair:
+1. Repair photos pipeline
+
 
 To do:
 3. Downloading new file without metas
@@ -9,4 +12,5 @@ To do:
 
 Done:
 2. Showin metadata in JSON
-3. 5. Change views to class views
+3. Change views to class views
+4. Dowloading Json data

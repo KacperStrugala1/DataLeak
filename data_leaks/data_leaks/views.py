@@ -7,7 +7,7 @@ from .file_type import FileType
 
 import logging
 import json
-import simplejson
+
 
 
 class HomeView(View):
@@ -55,12 +55,14 @@ class MetaView(View):
             meta_data = request.session.get("meta_data")
 
             if action == "show_json":
-                return JsonResponse(meta_data)
+                return JsonResponse(meta_data, json_dumps_params={'ensure_ascii':False})
             elif action == "download_json":
-                return HttpResponse(
-                simplejson.dumps(meta_data), 
-                content_type='application/force-download'
+                response = HttpResponse(
+                json.dumps(meta_data, ensure_ascii=False), 
+                content_type='application/json'
                 )
+                response["Content-Disposition"] = 'attachment; filename="file.json"'
+                return response
             else:
                 if not meta_data:
                     return HttpResponse("Invalid session get or no metadata")
@@ -75,7 +77,3 @@ def delete_meta_data(request):
             pass
     except Exception as exc:
         return HttpResponse(f"Error: {exc}")
-
-
-# def valentine(request):
-#     return render(request, "valentine.html")

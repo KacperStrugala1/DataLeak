@@ -54,9 +54,7 @@ class HomeView(View):
                         cleared_file.getvalue(),
                         content_type='application/octet-stream'
                     )
-                    response["Content-Disposition"] = (
-                        f'attachment; filename={file.name}.pdf'
-                    )
+                    response["Content-Disposition"] = f'attachment; filename={file.name}'
                     return response
                 
                 except Exception as exc:

@@ -19,31 +19,40 @@
             <div class="hero-body">
                 <div class="container has-text-centered">
                     <br><h1 class="title">Your metadata in file</h1>
-                   
-                        <div class="container has-text-centered column is-three-fifths is-offset-one-fift box has-background-light">
-                            {% for key, value in meta_data.items %}
-                                <strong> {{ key }}:</strong> {{ value|default:"None" }} <br>
-                            {% endfor %}
-                        </div>
-                        <div class="mt-5 has-text-centered">
+                        {%if meta_data.items %} 
+                            <div class="container has-text-centered column is-three-fifths is-offset-one-fift box has-background-light">
+                                {% for key, value in meta_data.items %}
+                                    <strong> {{ key }}:</strong> {{ value|default:"None" }} <br>
+                                {% endfor %}
+                            </div>
+                        {%else%}
+                            <div class="container has-text-centered column is-three-fifths is-offset-one-fift box has-background-light">
+                                    <strong>No metadata, file is save</strong>
+                            </div>
+                        {%endif%}
+                        <div class="buttons is-centered is-flex-wrap-wrap">
                             <form method="post" action="{% url 'meta_view' %}">
-                                {%csrf_token%}
-                                <button class="button is-link "  name="action" value="download_json" id="custom-file-input" type="submit">Download JSON metadata</button>
+                                {% csrf_token %}
+                                <button class="button is-link mr-2 mb-2" name="action" value="download_json" type="submit">
+                                    Download JSON metadata
+                                </button>
                             </form>
-                        </div>
-                        <div class="mt-5 has-text-centered">
                             <form method="post" action="{% url 'meta_view' %}">
-                                {%csrf_token%}
-                                <button class="button is-link "  name="action" value="show_json" id="custom-file-input" type="submit">Show JSON metadata</button>
+                                {% csrf_token %}
+                                <button class="button is-info mr-2 mb-2" name="action" value="show_json" type="submit">
+                                    Show JSON metadata
+                                </button>
                             </form>
+                            <form method="post" name="action" value="" action="{% url 'meta_view' %}">
+                                {% csrf_token %}
+                                <button class="button is-danger mr-2 mb-2" name="action" value="download_clear_file" type="submit">
+                                    Download without metadata
+                                </button>
+                            </form>
+                            <a href="{% url 'home_view' %}" class="button is-light mb-2">
+                                Back to Main Menu
+                            </a>
                         </div>
-                      
-                    
-                    <div class="mt-5 has-text-centered">
-                        <button class="button is-link has-text-white">
-                            <a href="{% url 'home_view' %}">Back to Main Menu<a>
-                        </button>
-                    </div>
                 </div>
                 
             </div>

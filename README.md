@@ -1,7 +1,10 @@
 # DataLeak
 
-**DataLeak** is a web-based tool built with **Python and Django** for detecting and analyzing metadata in **PDF files and images**.  
+**DataLeak** is a web-based tool built with **Python and Django** for detecting and analyzing metadata in **PDF and image files**.  
 The project focuses on identifying potentially sensitive information hidden in file metadata.
+<br>
+<img width="1249" height="721" alt="image" src="https://github.com/user-attachments/assets/90df7c21-2855-40e4-87c1-33e82363f8b0" />
+
 
 ## Project Description
 
@@ -54,3 +57,4 @@ python -m venv venv
 ```bash
 python programit/manage.py runserver
 ```
+

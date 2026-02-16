@@ -1,13 +1,12 @@
 To repair:
-2. in MetaView repair downloading pdf's
-
+1. Write downloading photos in  metaview
+8. flake8 
 
 To do:
-1. Write downloading photos in  metaview
+
 4. README on website
 6. Dockerize
 7. unitests
-8. flake8 
 9. maybe deploy or smt
 
 Done:
@@ -18,3 +17,4 @@ Done:
 5. Downloading new file without metas
 6. Repair showing meta in howme view for photos
 7. Write downloading photos in homeview
+2. in MetaView repair downloading pdf's

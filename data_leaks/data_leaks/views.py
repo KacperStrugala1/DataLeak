@@ -41,7 +41,7 @@ class HomeView(View):
                     file_extension = file_type.get_file_extension(uploaded_file)
                     if re.search("application/pdf", file_extension) or re.search("image/*", file_extension):
                         meta_data = file_type.check_file_format(uploaded_file)
-
+                        
                         request.session["meta_data"] = meta_data
                         request.session["extension"] = file_extension
                         request.session["file_name"] = file_name
@@ -64,7 +64,11 @@ class HomeView(View):
                 file = form.cleaned_data["file"]
 
                 file_type = FileType()
-                if file_type.get_file_extension(file) in ("pdf", "image"):
+                file_name = file.name
+                uploaded_file = form.cleaned_data["file"] 
+                
+                file_extension = file_type.get_file_extension(uploaded_file)
+                if re.search("application/pdf", file_extension) or re.search("image/*", file_extension):
                     cleared_file = file_type.delete_file(file)
                     try:
                         response = HttpResponse(
@@ -86,6 +90,7 @@ class HomeView(View):
 class MetaView(View):
     template_name = "meta_view.html"
     form_class = UploadFileForm
+    
 
     def get(self, request):
         try:
@@ -107,6 +112,7 @@ class MetaView(View):
             meta_data = request.session.get("meta_data")
             file_extension = request.session.get("extension")
             file_name = request.session.get("file_name")
+            file_type = FileType()
 
             if action == "show_json":
                 return JsonResponse(meta_data, json_dumps_params={"ensure_ascii": False})
@@ -115,7 +121,7 @@ class MetaView(View):
                 response = HttpResponse(
                     json.dumps(meta_data, ensure_ascii=False), content_type="application/json"
                 )
-                response["Content-Disposition"] = f'attachment; filename="{file_name}"'
+                response["Content-Disposition"] = f'attachment; filename="meta_data.json"'
                 return response
 
             elif action == "download_clear_file":
@@ -127,16 +133,20 @@ class MetaView(View):
                 if not file_content:
                     return HttpResponse("File does not exists, or session ends", status=404)
 
-                cache.delete(file_id)
-    
+                #Add there deleting metadata from that view
+
                 if re.search("application/pdf", file_extension):
-                    response = HttpResponse(file_content, content_type="application/octet-stream")
+                    cleared_file = file_type.delete_file(file_id)
+                    response = HttpResponse(cleared_file, content_type="application/octet-stream")
                     response["Content-Disposition"] = f'attachment; filename="{file_name}"'
                     return response
                 elif re.search("image/*", file_extension):
-                    response = HttpResponse(file_content, content_type=f"{file_extension}")
+                    cleared_file = file_type.delete_file(file_id)
+                    response = HttpResponse(cleared_file, content_type=f"{file_extension}")
                     response["Content-Disposition"] = f'attachment; filename="{file_name}"'
                     return response
+                
+                cache.delete(file_id)
 
             else:
                 if not meta_data:

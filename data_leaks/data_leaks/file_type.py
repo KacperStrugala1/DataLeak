@@ -22,9 +22,9 @@ class FileType:
         content_type = file.content_type
 
         if content_type in self.pdf_extension:
-            return "pdf"
+            return self.pdf_extension
         elif content_type in self.image_extensions:
-            return "image"
+            return "application/pdf"
         else:
             return None
 

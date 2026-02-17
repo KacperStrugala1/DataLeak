@@ -9,6 +9,7 @@ from django.core.cache import cache
 import logging
 import json
 import uuid
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -23,11 +24,13 @@ class HomeView(View):
 
     def post(self, request):
         action = request.POST.get("action")
-
+        
         if action == "show_metadata":
             try:
                 form = self.form_class(request.POST, request.FILES)
                 if form.is_valid():
+                    file = form.cleaned_data["file"]
+                    file_name = file.name
                     uploaded_file = form.cleaned_data["file"] 
                     file_id = str(uuid.uuid4())
                     
@@ -36,11 +39,12 @@ class HomeView(View):
 
                     file_type = FileType()
                     file_extension = file_type.get_file_extension(uploaded_file)
-                    if file_extension in ("pdf", "image"):
+                    if re.search("application/pdf", file_extension) or re.search("image/*", file_extension):
                         meta_data = file_type.check_file_format(uploaded_file)
 
                         request.session["meta_data"] = meta_data
                         request.session["extension"] = file_extension
+                        request.session["file_name"] = file_name
 
                         return redirect(f"/meta_view/?file_id={file_id}")
                     else:
@@ -102,6 +106,7 @@ class MetaView(View):
             action = request.POST.get("action")
             meta_data = request.session.get("meta_data")
             file_extension = request.session.get("extension")
+            file_name = request.session.get("file_name")
 
             if action == "show_json":
                 return JsonResponse(meta_data, json_dumps_params={"ensure_ascii": False})
@@ -110,26 +115,27 @@ class MetaView(View):
                 response = HttpResponse(
                     json.dumps(meta_data, ensure_ascii=False), content_type="application/json"
                 )
-                response["Content-Disposition"] = 'attachment; filename="file.json"'
+                response["Content-Disposition"] = f'attachment; filename="{file_name}"'
                 return response
 
             elif action == "download_clear_file":
                 file_id = request.POST.get("file_id")
                 if not file_id:
-                    return HttpResponse("Brak pliku", status=400)
+                    return HttpResponse("No file", status=400)
 
                 file_content = cache.get(file_id)
                 if not file_content:
-                    return HttpResponse("Plik nie istnieje lub wygasł", status=404)
+                    return HttpResponse("File does not exists, or session ends", status=404)
 
                 cache.delete(file_id)
-                if file_extension == "pdf":
+    
+                if re.search("application/pdf", file_extension):
                     response = HttpResponse(file_content, content_type="application/octet-stream")
-                    response["Content-Disposition"] = 'attachment; filename="file.pdf"'
+                    response["Content-Disposition"] = f'attachment; filename="{file_name}"'
                     return response
-                elif file_extension == "img":
-                    response = HttpResponse(file_content, content_type="application/image")
-                    response["Content-Disposition"] = 'attachment; filename="file"'
+                elif re.search("image/*", file_extension):
+                    response = HttpResponse(file_content, content_type=f"{file_extension}")
+                    response["Content-Disposition"] = f'attachment; filename="{file_name}"'
                     return response
 
             else:

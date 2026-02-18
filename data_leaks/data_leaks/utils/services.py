@@ -3,7 +3,6 @@ from PIL import Image
 from io import BytesIO
 from PIL.ExifTags import TAGS
 import logging
-import datetime
 
 
 class PdfFile:
@@ -22,7 +21,7 @@ class PdfFile:
                         "Creator": getattr(meta, "creator", None),
                         "Producer": getattr(meta, "producer", None),
                         "Subject": getattr(meta, "subject", None),
-                        # added time serialization to get pass to json
+                        # added time serialization to valid json output
                         "Created": getattr(meta, "creation_date").strftime("%Y-%m-%d %H:%M:%S"),
                         "Keywords": getattr(meta, "keywords", None),
                     }
@@ -33,7 +32,7 @@ class PdfFile:
                         "Creator": getattr(meta, "creator", None),
                         "Producer": getattr(meta, "producer", None),
                         "Subject": getattr(meta, "subject", None),
-                        # added time serialization to get pass to json
+                        # change value to None to avoid json serialization problem 
                         "Created": "None",
                         "Keywords": getattr(meta, "keywords", None),
                     }

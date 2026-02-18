@@ -45,7 +45,6 @@
                             </form>
                             <form method="post" name="action" value="" action="{% url 'meta_view' %}">
                                 {% csrf_token %}
-                                <input type="hidden" name="file_id" value="{{ file_id }}">
                                 <button class="button is-danger mr-2 mb-2" name="action" value="download_clear_file" type="submit">
                                     Download without metadata
                                 </button>

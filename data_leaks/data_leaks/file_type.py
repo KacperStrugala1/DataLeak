@@ -17,13 +17,16 @@ class FileType:
         self.pdf_extension = ["application/pdf"]
 
     # REFACTOR THAT pls
+    def is_supported(self, extension):
+        if extension in self.pdf_extension or self.image_extensions:
+            return True
+        else:
+            return False
 
     def get_file_extension(self, file):
         content_type = file.content_type
 
-        if content_type in self.pdf_extension:
-            return content_type
-        elif content_type in self.image_extensions:
+        if content_type in self.pdf_extension or self.image_extensions:
             return content_type
         else:
             return None

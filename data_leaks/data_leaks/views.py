@@ -5,6 +5,7 @@ from django.views import View
 from .forms import UploadFileForm
 from .file_type import FileType
 from django.core.cache import cache
+from io import BytesIO
 
 import logging
 import json
@@ -24,33 +25,32 @@ class HomeView(View):
 
     def post(self, request):
         action = request.POST.get("action")
-        
+        form = self.form_class(request.POST, request.FILES)
+        file_type = FileType()
         if action == "show_metadata":
             try:
-                form = self.form_class(request.POST, request.FILES)
                 if form.is_valid():
                     file = form.cleaned_data["file"]
                     file_name = file.name
-                    uploaded_file = form.cleaned_data["file"] 
                     file_id = str(uuid.uuid4())
                     
-                    file_content = uploaded_file.read()
+                    file_content = file.read()
+                    file.seek(0)
                     cache.set(file_id, file_content, timeout=300) 
 
-                    file_type = FileType()
-                    file_extension = file_type.get_file_extension(uploaded_file)
-                    if re.search("application/pdf", file_extension) or re.search("image/*", file_extension):
-                        meta_data = file_type.check_file_format(uploaded_file)
+                    file_extension = file.content_type
+                    if file_type.is_supported(file_extension):
+                        meta_data = file_type.check_file_format(file)
                         
                         request.session["meta_data"] = meta_data
                         request.session["extension"] = file_extension
                         request.session["file_name"] = file_name
+                        request.session["file_id"] = file_id
 
                         return redirect(f"/meta_view/?file_id={file_id}")
                     else:
                         return HttpResponse("Invalid extension", status=400)
                 else:
-                    form = self.form_class()
                     return render(request, "home.html", {"form": form})
 
             except Exception as exc:
@@ -58,21 +58,18 @@ class HomeView(View):
                 return HttpResponse(f"Internal error: {exc}", status=500)
 
         elif action == "download_without_meta":
-            form = self.form_class(request.POST, request.FILES)
 
             if form.is_valid():
                 file = form.cleaned_data["file"]
-
-                file_type = FileType()
-                file_name = file.name
-                uploaded_file = form.cleaned_data["file"] 
+                file_name = file.name 
                 
-                file_extension = file_type.get_file_extension(uploaded_file)
-                if re.search("application/pdf", file_extension) or re.search("image/*", file_extension):
+                file_extension = file_type.get_file_extension(file)
+                if file_extension is not None:
                     cleared_file = file_type.delete_file(file)
                     try:
                         response = HttpResponse(
-                            cleared_file.getvalue(), content_type="application/octet-stream"
+                            cleared_file, 
+                            content_type="application/octet-stream"
                         )
                         response["Content-Disposition"] = f"attachment; filename={file.name}"
                         return response
@@ -112,7 +109,9 @@ class MetaView(View):
             meta_data = request.session.get("meta_data")
             file_extension = request.session.get("extension")
             file_name = request.session.get("file_name")
+            file_id = request.session.get("file_id")
             file_type = FileType()
+            
 
             if action == "show_json":
                 return JsonResponse(meta_data, json_dumps_params={"ensure_ascii": False})
@@ -125,7 +124,8 @@ class MetaView(View):
                 return response
 
             elif action == "download_clear_file":
-                file_id = request.POST.get("file_id")
+                file_id = request.session.get("file_id")
+
                 if not file_id:
                     return HttpResponse("No file", status=400)
 
@@ -133,20 +133,16 @@ class MetaView(View):
                 if not file_content:
                     return HttpResponse("File does not exists, or session ends", status=404)
 
-                #Add there deleting metadata from that view
+                file_object = BytesIO(file_content)
+                file_object.content_type = file_extension
 
-                if re.search("application/pdf", file_extension):
-                    cleared_file = file_type.delete_file(file_id)
-                    response = HttpResponse(cleared_file, content_type="application/octet-stream")
-                    response["Content-Disposition"] = f'attachment; filename="{file_name}"'
-                    return response
-                elif re.search("image/*", file_extension):
-                    cleared_file = file_type.delete_file(file_id)
+                if file_extension is not None:
+                    cleared_file = file_type.delete_file(file_object)
                     response = HttpResponse(cleared_file, content_type=f"{file_extension}")
                     response["Content-Disposition"] = f'attachment; filename="{file_name}"'
                     return response
-                
-                cache.delete(file_id)
+                else:
+                    return HttpResponse("Invalid extension")
 
             else:
                 if not meta_data:

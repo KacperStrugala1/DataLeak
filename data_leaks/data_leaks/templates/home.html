@@ -1,38 +1,13 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+        <link rel="stylesheet" href="{% static 'css/home.css' %}" >
+        <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
         <title>Home</title>
-        <style>
-            #drop-area {
-                border: 2px dashed #3273dc;
-                cursor: pointer;
-                transition: all 0.25s ease;
-                width: 25%;
-                min-height: 10rem;
-                margin: 0 auto 1% auto;
-                position: relative;
-                display: flex;
-                flex-direction: column; 
-                justify-content: center;
-                align-items: center;     
-                text-align: center;  
-            }
-
-            #drop-area.is-hovered {
-                background-color: #f0f6ff;
-                border-color: #2759a5;
-            }
-
-            #drop-area input[type="file"] {
-                position: absolute;
-                inset: 0;
-                opacity: 0;
-                cursor: pointer;
-            }
-        </style>
     </head>
     <body>
         <section class="her is-fullheight is-light">

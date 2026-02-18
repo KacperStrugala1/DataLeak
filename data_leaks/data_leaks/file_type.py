@@ -33,14 +33,14 @@ class FileType:
             return False
 
 
-    def check_file_format(self, file):
+    def check_file_meta(self, file):
         handler = self._get_handler(file.content_type)
         if handler:
             return handler.get_metadata(file)
         return None
 
 
-    def delete_file(self, file):
+    def delete_file_meta(self, file):
         handler = self._get_handler(file.content_type)
         if handler:
             return handler.delete_metadata(file)

@@ -10,7 +10,7 @@ from io import BytesIO
 import logging
 import json
 import uuid
-import re
+
 
 logger = logging.getLogger(__name__)
 
@@ -33,21 +33,21 @@ class HomeView(View):
                     file = form.cleaned_data["file"]
                     file_name = file.name
                     file_id = str(uuid.uuid4())
-                    
                     file_content = file.read()
                     file.seek(0)
                     cache.set(file_id, file_content, timeout=300) 
 
                     file_extension = file.content_type
                     if file_type.is_supported(file_extension):
-                        meta_data = file_type.check_file_format(file)
+                        #get proper metadata for file extension
+                        meta_data = file_type.check_file_meta(file)
                         
                         request.session["meta_data"] = meta_data
                         request.session["extension"] = file_extension
                         request.session["file_name"] = file_name
                         request.session["file_id"] = file_id
 
-                        return redirect(f"/meta_view/?file_id={file_id}")
+                        return redirect("meta_view")
                     else:
                         return HttpResponse("Invalid extension", status=400)
                 else:
@@ -62,10 +62,10 @@ class HomeView(View):
             if form.is_valid():
                 file = form.cleaned_data["file"]
                 file_name = file.name 
-                
-                file_extension = file_type.get_file_extension(file)
+                file_extension = file.content_type
+
                 if file_extension is not None:
-                    cleared_file = file_type.delete_file(file)
+                    cleared_file = file_type.delete_file_meta(file)
                     try:
                         response = HttpResponse(
                             cleared_file, 
@@ -79,6 +79,9 @@ class HomeView(View):
                 else:
                     logger.info("Sent invalid extension")
                     return HttpResponse("Invalid extension")
+            else:
+                logger.info("Invalid form")
+                return HttpResponse("Invalid send file")
         else:
             logger.info("Wrong operation")
             return HttpResponse("Wrong operation")
@@ -92,11 +95,10 @@ class MetaView(View):
     def get(self, request):
         try:
             meta_data = request.session.get("meta_data")
-            file_id = request.GET.get("file_id")
+            file_id = request.session.get("file_id")
             if not file_id:
-                return HttpResponse("There's no file_id", status=400)
-
-            # del request.session["meta_data"]
+                raise Http404("No active session file")
+            
         except Exception as exc:
             logger.exception(f"Error with getting data session. Error {exc}")
             return HttpResponseServerError("Server error occured")
@@ -124,7 +126,6 @@ class MetaView(View):
                 return response
 
             elif action == "download_clear_file":
-                file_id = request.session.get("file_id")
 
                 if not file_id:
                     return HttpResponse("No file", status=400)
@@ -136,17 +137,18 @@ class MetaView(View):
                 file_object = BytesIO(file_content)
                 file_object.content_type = file_extension
 
-                if file_extension is not None:
-                    cleared_file = file_type.delete_file(file_object)
+                if file_type.is_supported(file_extension):
+                    cleared_file = file_type.delete_file_meta(file_object)
                     response = HttpResponse(cleared_file, content_type=f"{file_extension}")
                     response["Content-Disposition"] = f'attachment; filename="{file_name}"'
+                    cache.delete(file_id)
                     return response
                 else:
                     return HttpResponse("Invalid extension")
 
             else:
                 if not meta_data:
-                    return Http404("Invalid session process or get no metadata")
+                    raise Http404("Invalid session process or get no metadata")
 
         except Exception as exc:
             logger.exception(f"Error with getting data session. Error {exc}")

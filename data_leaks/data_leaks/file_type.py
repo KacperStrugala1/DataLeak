@@ -16,37 +16,32 @@ class FileType:
         ]
         self.pdf_extension = ["application/pdf"]
 
-    # REFACTOR THAT pls
+    #handler will return instance of our file object (pdf or image) 
+    def _get_handler(self, content_type):
+        if content_type in self.pdf_extension:
+            return self.pdf_file
+        elif content_type in self.image_extensions:
+            return self.image_file
+        else:
+            return None
+
+
     def is_supported(self, extension):
         if extension in self.pdf_extension or self.image_extensions:
             return True
         else:
             return False
 
-    def get_file_extension(self, file):
-        content_type = file.content_type
-
-        if content_type in self.pdf_extension or self.image_extensions:
-            return content_type
-        else:
-            return None
 
     def check_file_format(self, file):
-        content_type = file.content_type
+        handler = self._get_handler(file.content_type)
+        if handler:
+            return handler.get_metadata(file)
+        return None
 
-        if content_type in self.pdf_extension:
-            return self.pdf_file.get_metadata(file)
-        elif content_type in self.image_extensions:
-            return self.image_file.get_metadata(file)
-        else:
-            return None
 
     def delete_file(self, file):
-        content_type = file.content_type
-
-        if content_type in self.pdf_extension:
-            return self.pdf_file.delete_metadata(file)
-        elif content_type in self.image_extensions:
-            return self.image_file.delete_metadata(file)
-        else:
-            return None
+        handler = self._get_handler(file.content_type)
+        if handler:
+            return handler.delete_metadata(file)
+        return None

@@ -27,7 +27,7 @@ class FileType:
 
 
     def is_supported(self, extension):
-        if extension in self.pdf_extension or self.image_extensions:
+        if extension in self.pdf_extension or extension in self.image_extensions:
             return True
         else:
             return False

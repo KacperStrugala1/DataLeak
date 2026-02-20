@@ -50,5 +50,21 @@ def test_is_supported_returns_true(file_type, extension):
 
 def test_is_supported_fail(file_type, extension):
     assert not file_type.is_supported(extension)  
-      
-    
+
+
+
+def test_check_file_meta_pdf(file_type):
+    #Arrange 
+    file = Mock(spec=["content_type"])
+    file.content_type = "application/pdf"
+    #what method should return 
+    file_type.pdf_file.get_metadata.return_value = {"author": "author"}
+
+    #Act 
+
+    result = file_type.pdf_file.check_file_meta(file)
+
+    #Assert
+    file_type.pdf_file.get_metadata.assert_called_once_with(file)
+
+    assert result == {"author": "author"}

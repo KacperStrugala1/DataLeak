@@ -1,13 +1,13 @@
 To repair:
-1. Write downloading photos in  metaview
-8. flake8 
+
+In progress: 
+1. unitests 
+2. 1. Dockerize
 
 To do:
 
-4. README on website
-6. Dockerize
-7. unitests
-9. maybe deploy or smt
+
+2. maybe deploy or smt
 
 Done:
 1. Showin metadata in JSON

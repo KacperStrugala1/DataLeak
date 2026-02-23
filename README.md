@@ -31,8 +31,24 @@ The project is designed for **educational and security testing purposes**.
 - Python 3
 - Django
 - HTML / CSS (Bulma)
+- Black formatter
+- Flake for linting
+- Pytest for unittests
 
 ##  Installation
+
+Install using Docker
+```bash
+docker build -t data-leaks:1.0 <file_location>
+docker run -p 8080:8080 --name data_leaks <image_id>
+```
+
+Or install by uv:
+
+1. Clone the repository:
+```bash
+git clone https://github.com/KacperStrugala1/DataLeak.git
+```
 
 1. Clone the repository:
 ```bash
@@ -54,6 +70,7 @@ python -m venv venv
 ```bash
 python programit/manage.py runserver
 ```
+
 
 
 

@@ -4,6 +4,11 @@
 The project focuses on identifying potentially sensitive information hidden in file metadata and helps to clear file from sensitive data.
 <br>
 
+## Program Preview
+
+![Animation](https://github.com/user-attachments/assets/7a94cbf6-4e67-49e9-9695-30689916349f)
+
+
 ## Project Description
 
 DataLeak allows users to upload PDF documents and image files to automatically extract and analyze metadata.  
@@ -65,6 +70,7 @@ python -m venv venv
 ```bash
 python programit/manage.py runserver
 ```
+
 
 
 

@@ -40,7 +40,7 @@ The project is designed for **educational and security testing purposes**.
 Install using Docker
 ```bash
 docker build -t data-leaks:1.0 <file_location>
-docker run -p 8080:8080 --name data_leaks <image_id>
+docker run -p 8080:8080 data-leaks:1.0
 ```
 
 Or install by uv:
@@ -70,6 +70,7 @@ python -m venv venv
 ```bash
 python programit/manage.py runserver
 ```
+
 
 
 

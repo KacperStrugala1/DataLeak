@@ -49,11 +49,6 @@ Or install by uv:
 ```bash
 git clone https://github.com/KacperStrugala1/DataLeak.git
 ```
-
-1. Clone the repository:
-```bash
-git clone https://github.com/KacperStrugala1/DataLeak.git
-```
 2. Make virtual env
 ```bash
 python -m venv venv 
@@ -70,6 +65,7 @@ python -m venv venv
 ```bash
 python programit/manage.py runserver
 ```
+
 
 
 

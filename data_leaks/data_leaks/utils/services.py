@@ -14,6 +14,7 @@ class PdfFile:
             if not meta:
                 return "Cannot fetch metadata or blank file"
             else:
+                #conditional statement to prevent creation_date serialization problem 
                 if getattr(meta, "creation_date") != None:
                     meta_data = {
                         "Title": getattr(meta, "title", None),

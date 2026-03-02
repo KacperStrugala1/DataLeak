@@ -1,6 +1,6 @@
 
 In progress: 
-1. unitests and docker
+1. unitests 
 
 To do:
 1. Deployment

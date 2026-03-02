@@ -1,4 +1,9 @@
-from django.http import HttpResponse, JsonResponse, Http404, HttpResponseServerError
+from django.http import (
+    HttpResponse, 
+    JsonResponse, 
+    Http404, 
+    HttpResponseServerError
+)
 from django.shortcuts import render, redirect
 from django.views import View
 

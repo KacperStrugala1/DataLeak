@@ -1,32 +1,59 @@
 from data_leaks.utils.services import PdfFile, PhotoFile
 from unittest.mock import MagicMock, patch
+from pypdf import PdfReader, PdfWriter
 import pytest
-import datetime
+from datetime import datetime
 import PIL
 
-#PDF FILE tests
 @pytest.fixture
 def pdf_file():
-    pdf_file = PdfFile()
-    return pdf_file
+    return PdfFile()
 
-def test_get_metadata(pdf_file):
-    mock_meta = MagicMock()
-    mock_meta.title = "Title"
-    mock_meta.author = "Author"
-    mock_meta.creator = "Creator"
-    mock_meta.producer = "Producer"
-    mock_meta.subject = "Subject"
-    mock_meta.creation_date = datetime.datetime(2024, 1, 1, 10, 0, 0)
-    mock_meta.keywords = "pdf,test"
+@pytest.fixture
+def photo_file():
+    return PhotoFile()
 
-    mock_reader = MagicMock()
-    mock_reader.metadata = mock_meta
 
-    with patch("pdf_file.PdfReader", return_value=mock_reader):
-        result = pdf_file.get_metadata("fake.pdf")
+@pytest.fixture
+def metadata_pdf():
+    meta_data = MagicMock()
+    meta_data.title = "Test Title"
+    meta_data.creation_date = datetime(2024, 1, 1, 12, 0, 0)
+    meta_data.keywords = "pdf,test"
+    return meta_data
 
-    assert result["Title"] == "Title"
-    assert result["Created"] == "2024-01-01 10:00:00"
+@pytest.fixture
+def metadata_pdf():
+    meta_data = MagicMock()
+    meta_data.title = "Test Title"
+    meta_data.creation_date = datetime(2026, 1, 1, 12, 0, 0)
+    meta_data.keywords = "pdf,test"
+    return meta_data
+
+
+@patch("data_leaks.utils.services.PdfReader")
+def test_get_metadata_create_date(mock_reader, pdf_file, metadata_pdf):
+    
+    mock_reader.return_value.metadata = metadata_pdf
+    result = pdf_file.get_metadata("file.pdf")
+
+    assert result["Created"] == "2026-01-01 12:00:00"
+
+@patch("data_leaks.utils.services.PdfReader")
+def test_get_metadata_fail(mock_reader, pdf_file):
+    
+    mock_reader.return_value.metadata = None
+    result = pdf_file.get_metadata("file.pdf")
+
+    assert result == "Cannot fetch metadata or blank file"
+
+@patch("data_leaks.utils.services.PdfReader")
+def test_get_metadata_without_date(mock_reader, pdf_file):
+    meta_data = MagicMock()
+    meta_data.creation_date = None
+    mock_reader.return_value.metadata = meta_data
+    result = pdf_file.get_metadata("file.pdf")
+
+    assert result["Created"] == "None"
 
 

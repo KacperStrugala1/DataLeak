@@ -3,7 +3,7 @@ name: Data Leaks CI
 on:
   push:
     branches: [ main ]
-  pull-request:
+  pull_request:
     branches: [ main ]
 
 jobs:
@@ -13,6 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
   install:
+    runs-on: ubuntu-latest
     steps:
       - name: Install requirements
         run: pip install -r requirements.txt

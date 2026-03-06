@@ -6,5 +6,6 @@ import pytest
 class TestHomeView:
     pass
 
+
 class TestMetaView:
     pass

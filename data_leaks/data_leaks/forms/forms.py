@@ -3,6 +3,4 @@ from django import forms
 
 class UploadFileForm(forms.Form):
     # variable name need to be compatible to html name form
-    file = forms.FileField(
-    widget=forms.ClearableFileInput(attrs={"id": "file-input"})
-)
+    file = forms.FileField(widget=forms.ClearableFileInput(attrs={"id": "file-input"}))

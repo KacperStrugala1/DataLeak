@@ -16,7 +16,7 @@ class FileType:
         ]
         self.pdf_extension = ["application/pdf"]
 
-    #handler will return instance of our file object (pdf or image) 
+    # handler will return instance of our file object (pdf or image)
     def _get_handler(self, content_type):
         if content_type in self.pdf_extension:
             return self.pdf_file
@@ -25,20 +25,17 @@ class FileType:
         else:
             return None
 
-
     def is_supported(self, extension):
         if extension in self.pdf_extension or extension in self.image_extensions:
             return True
         else:
             return False
 
-
     def check_file_meta(self, file):
         handler = self._get_handler(file.content_type)
         if handler:
             return handler.get_metadata(file)
         return None
-
 
     def delete_file_meta(self, file):
         handler = self._get_handler(file.content_type)

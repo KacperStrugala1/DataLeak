@@ -24,19 +24,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           
-  black-formatter:
-      runs-on: ubuntu-latest
-      needs: build
-      steps:
-        - name: black formatter
-          run: |
-            pip install black 
-            python -m black . --line-length 100
+      - name: black formatter
+        run: |
+          pip install black 
+          python -m black . --line-length 100
             
-  tests:
-      runs-on: ubuntu-latest
-      needs: build 
-      steps:
       - name: Run tests
         run: |
           pip install pytest

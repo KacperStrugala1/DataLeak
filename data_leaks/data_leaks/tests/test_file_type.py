@@ -1,5 +1,6 @@
 import pytest
 from unittest.mock import Mock
+from types import SimpleNamespace
 from data_leaks.file_type import FileType
 
 
@@ -9,6 +10,10 @@ def file_type():
     file_type.pdf_file = Mock()
     file_type.image_file = Mock()
     return file_type
+
+pdf_extension = SimpleNamespace(content_type="application/pdf")
+image_extension = SimpleNamespace(content_type= "image/jpeg")
+invalid_extension = SimpleNamespace(content_type="video/mp4")
 
 def test_get_handler_pdf(file_type):
     handler = file_type._get_handler("application/pdf")
@@ -54,17 +59,36 @@ def test_is_supported_fail(file_type, extension):
 
 
 def test_check_file_meta_pdf(file_type):
-    #Arrange 
-    file = Mock(spec=["content_type"])
-    file.content_type = "application/pdf"
-    #what method should return 
-    file_type.pdf_file.get_metadata.return_value = {"author": "author"}
+    
+    file_type.pdf_file.get_metadata.return_value = {"Creator": "User1"}
 
-    #Act 
+    
+    metadata = file_type.check_file_meta(pdf_extension)
+    file_type.pdf_file.get_metadata.assert_called_once_with(pdf_extension)
 
-    result = file_type.pdf_file.check_file_meta(file)
+    assert metadata == {"Creator": "User1"}
 
-    #Assert
-    file_type.pdf_file.get_metadata.assert_called_once_with(file)
+def test_check_file_meta_photo(file_type):
+    
+    file_type.image_file.get_metadata.return_value = {"Device": "Iphone 17"}
 
-    assert result == {"author": "author"}
+    metadata = file_type.check_file_meta(image_extension)
+    file_type.image_file.get_metadata.assert_called_once_with(image_extension)
+
+    assert metadata == {"Device": "Iphone 17"}
+
+
+def test_check_file_meta_fail(file_type):
+    
+    metadata = file_type.check_file_meta(invalid_extension)
+
+    assert metadata is None
+
+def test_delete_file_meta_pdf(file_type):
+    pass
+
+def test_delete_file_meta_pdf(file_type):
+    pass
+
+def test_delete_file_meta_pdf(file_type):
+    pass

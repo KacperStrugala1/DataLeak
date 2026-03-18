@@ -1,9 +1,4 @@
-from django.http import (
-    HttpResponse, 
-    JsonResponse, 
-    Http404, 
-    HttpResponseServerError
-)
+from django.http import HttpResponse, JsonResponse, Http404, HttpResponseServerError
 from django.shortcuts import render, redirect
 from django.views import View
 
@@ -15,7 +10,6 @@ from io import BytesIO
 import logging
 import json
 import uuid
-
 
 logger = logging.getLogger(__name__)
 
@@ -40,13 +34,13 @@ class HomeView(View):
                     file_id = str(uuid.uuid4())
                     file_content = file.read()
                     file.seek(0)
-                    cache.set(file_id, file_content, timeout=300) 
+                    cache.set(file_id, file_content, timeout=300)
 
                     file_extension = file.content_type
                     if file_type.is_supported(file_extension):
-                        #get proper metadata for file extension
+                        # get proper metadata for file extension
                         meta_data = file_type.check_file_meta(file)
-                        
+
                         request.session["meta_data"] = meta_data
                         request.session["extension"] = file_extension
                         request.session["file_name"] = file_name
@@ -66,15 +60,14 @@ class HomeView(View):
 
             if form.is_valid():
                 file = form.cleaned_data["file"]
-                file_name = file.name 
+                file_name = file.name
                 file_extension = file.content_type
 
                 if file_extension is not None:
                     cleared_file = file_type.delete_file_meta(file)
                     try:
                         response = HttpResponse(
-                            cleared_file, 
-                            content_type="application/octet-stream"
+                            cleared_file, content_type="application/octet-stream"
                         )
                         response["Content-Disposition"] = f"attachment; filename={file.name}"
                         return response
@@ -95,7 +88,6 @@ class HomeView(View):
 class MetaView(View):
     template_name = "meta_view.html"
     form_class = UploadFileForm
-    
 
     def get(self, request):
         try:
@@ -103,12 +95,12 @@ class MetaView(View):
             file_id = request.session.get("file_id")
             if not file_id:
                 raise Http404("No active session file")
-            
+
         except Exception as exc:
             logger.exception(f"Error with getting data session. Error {exc}")
             return HttpResponseServerError("Server error occured")
 
-        return render(request, self.template_name,  {"file_id": file_id, "meta_data": meta_data})
+        return render(request, self.template_name, {"file_id": file_id, "meta_data": meta_data})
 
     def post(self, request):
         try:
@@ -118,7 +110,6 @@ class MetaView(View):
             file_name = request.session.get("file_name")
             file_id = request.session.get("file_id")
             file_type = FileType()
-            
 
             if action == "show_json":
                 return JsonResponse(meta_data, json_dumps_params={"ensure_ascii": False})
